@@ -314,6 +314,70 @@
     }
     .sound-opt:active { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
     .sound-opt svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* Sound library section inside the picker */
+    .sound-lib-section {
+      display: flex; flex-direction: column; gap: 4px;
+      margin: 6px 0;
+      padding-top: 8px;
+      border-top: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+    }
+    .sound-lib-heading {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--text-dim);
+      padding: 2px 4px;
+    }
+    .sound-lib-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 12px;
+      background: color-mix(in srgb, var(--surface) 60%, transparent);
+      border: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.15s var(--ease), border-color 0.15s var(--ease);
+    }
+    @media (hover: hover) {
+      .sound-lib-item:hover { background: color-mix(in srgb, var(--surface) 85%, transparent); border-color: var(--accent); }
+    }
+    .sound-lib-item svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .sound-lib-label {
+      flex: 1; min-width: 0;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .sound-lib-remove {
+      width: 22px; height: 22px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+      color: var(--text-dim);
+      font-size: 14px;
+      flex-shrink: 0;
+      transition: background 0.15s var(--ease), color 0.15s var(--ease);
+    }
+    @media (hover: hover) {
+      .sound-lib-remove:hover { background: color-mix(in srgb, var(--danger) 20%, transparent); color: var(--danger); }
+    }
+    .sound-lib-clear-wrap {
+      display: flex; justify-content: flex-end;
+      padding: 4px 4px 0;
+    }
+    .sound-lib-clear {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 4px 8px;
+      transition: color 0.15s var(--ease);
+    }
+    @media (hover: hover) {
+      .sound-lib-clear:hover { color: var(--danger); }
+    }
+    .sound-opt svg { width: 16px; height: 16px; flex-shrink: 0; }
     .sound-current { display: flex; align-items: center; gap: 8px; }
     .sound-current svg { width: 14px; height: 14px; flex-shrink: 0; }
     .sound-current .sound-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
@@ -767,17 +831,60 @@
       .bg-clear-btn:hover { border-color: var(--accent); }
     }
     .bg-no-image { font-size: 13px; color: var(--text-dim); }
-    .toggle-row {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 0; cursor: pointer; user-select: none;
+    /* iOS-style switch */
+    .switch-row {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0;
+      cursor: pointer;
+      user-select: none;
       margin-top: 8px;
     }
-    .toggle-row input[type="checkbox"] {
-      width: 18px; height: 18px;
-      accent-color: var(--accent);
-      cursor: pointer;
+    .switch-label { font-size: 14px; color: var(--text); flex: 1; }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 26px;
+      flex-shrink: 0;
     }
-    .toggle-label { font-size: 14px; color: var(--text); }
+    .switch input {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      cursor: pointer;
+      z-index: 2;
+    }
+    .switch-track {
+      position: absolute; inset: 0;
+      background: color-mix(in srgb, var(--text-dim) 35%, transparent);
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+      transition: background 0.25s var(--ease), border-color 0.25s var(--ease);
+    }
+    .switch-thumb {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: #ffffff;
+      border-radius: 50%;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.25s var(--ease), background 0.25s var(--ease);
+    }
+    .switch input:checked + .switch-track {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .switch input:checked + .switch-track .switch-thumb {
+      transform: translateX(18px);
+    }
+    .switch input:focus-visible + .switch-track {
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent);
+    }
     .slider-row {
       display: flex; justify-content: space-between; align-items: center;
       margin-top: 12px; margin-bottom: 6px;
@@ -988,11 +1095,7 @@
         <span class="sound-current" id="sound-current"></span>
         <button class="sound-change-btn" id="sound-change-btn">Change</button>
       </div>
-      <div class="sound-picker hidden" id="sound-picker">
-        <button class="sound-opt" data-type="default"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Default beep</button>
-        <button class="sound-opt" data-type="file"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>Upload audio file...</button>
-        <button class="sound-opt" data-type="youtube"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>YouTube link...</button>
-      </div>
+      <div class="sound-picker hidden" id="sound-picker"></div>
       <input type="file" id="sound-file-input" accept="audio/*" hidden>
       <button class="btn-primary" id="timer-start" disabled>+ Add Timer</button>
     </div>
@@ -1047,9 +1150,12 @@
 
     <div class="settings-section">
       <h3>Display</h3>
-      <label class="toggle-row" id="wakelock-row">
-        <input type="checkbox" id="wakelock-toggle">
-        <span class="toggle-label">Keep screen awake</span>
+      <label class="switch-row" id="wakelock-row">
+        <span class="switch-label">Keep screen awake</span>
+        <span class="switch" id="wakelock-switch">
+          <input type="checkbox" id="wakelock-toggle">
+          <span class="switch-track"><span class="switch-thumb"></span></span>
+        </span>
       </label>
       <p class="help-text" id="wakelock-help">Prevents the screen from dimming or turning off.</p>
       <button class="btn-secondary" id="fullscreen-btn" style="margin-top:8px;width:100%">Enter Fullscreen</button>
@@ -1399,16 +1505,6 @@
     });
   }
 
-  async function playYouTubeSound(videoId) {
-    try {
-      await loadYouTubeAPI();
-      await ensureYTPlayer();
-      ytPlayer.loadVideoById(videoId);
-      ytPlayer.unMute();
-      ytPlayer.playVideo();
-    } catch(e) {}
-  }
-
   function extractVideoId(input) {
     if (!input) return null;
     input = input.trim();
@@ -1419,12 +1515,86 @@
   }
 
   // ============================================================
+  // SOUND LIBRARY (saved sounds for reuse)
+  // ============================================================
+  let soundLibrary = [];
+  // Each entry: { id: 'lib-...', type: 'file' | 'youtube', label: string, videoId?: string }
+  // For file entries: blob lives in SoundDB keyed by id
+
+  function genLibId() { return 'lib-' + Date.now() + '-' + Math.floor(Math.random() * 1000); }
+
+  function loadSoundLibrary() {
+    try {
+      const raw = localStorage.getItem('wallclock-sound-library');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          soundLibrary = parsed.filter(e => e && e.id && (e.type === 'file' || e.type === 'youtube'));
+        }
+      }
+    } catch(e) {}
+  }
+
+  function saveSoundLibrary() {
+    try { localStorage.setItem('wallclock-sound-library', JSON.stringify(soundLibrary)); } catch(e) {}
+  }
+
+  async function addFileToLibrary(file) {
+    const id = genLibId();
+    try { await SoundDB.put(id, file, file.name); } catch(e) { return null; }
+    soundLibrary.push({ id, type: 'file', label: file.name });
+    saveSoundLibrary();
+    return id;
+  }
+
+  async function addYouTubeToLibrary(videoId) {
+    const id = genLibId();
+    const title = await fetchYouTubeTitle(videoId);
+    soundLibrary.push({ id, type: 'youtube', label: title || ('YouTube ' + videoId), videoId });
+    saveSoundLibrary();
+    return id;
+  }
+
+  async function removeFromLibrary(libId) {
+    const entry = soundLibrary.find(e => e.id === libId);
+    if (!entry) return;
+    if (entry.type === 'file') {
+      try { await SoundDB.remove(libId); } catch(e) {}
+    }
+    soundLibrary = soundLibrary.filter(e => e.id !== libId);
+    saveSoundLibrary();
+  }
+
+  async function clearSoundLibrary() {
+    for (const e of soundLibrary) {
+      if (e.type === 'file') {
+        try { await SoundDB.remove(e.id); } catch(err) {}
+      }
+    }
+    soundLibrary = [];
+    saveSoundLibrary();
+  }
+
+  function isLibraryEntry(soundDataId) {
+    return soundLibrary.some(e => e.id === soundDataId);
+  }
+
+  async function fetchYouTubeTitle(videoId) {
+    try {
+      const resp = await fetch('https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=' + videoId + '&format=json');
+      if (!resp.ok) return null;
+      const data = await resp.json();
+      return data.title || null;
+    } catch(e) { return null; }
+  }
+
+  // ============================================================
   // PENDING SOUND (selection in form, not yet attached to a timer)
   // ============================================================
-  let pendingSound = { type: 'default', data: null, label: '', file: null };
+  let pendingSound = { type: 'default', data: null, label: '' };
 
-  function setPendingSound(type, data, label, file) {
-    pendingSound = { type, data, label, file: file || null };
+  function setPendingSound(type, data, label) {
+    pendingSound = { type, data, label };
     updatePendingSoundUI();
   }
 
@@ -1511,20 +1681,14 @@
       soundLabel: ''
     };
 
-    // Attach pending sound (from form picker)
-    if (pendingSound.type === 'file' && pendingSound.file) {
-      const soundId = 'sound-' + t.id;
-      try {
-        await SoundDB.put(soundId, pendingSound.file, pendingSound.label);
-        t.soundType = 'file';
-        t.soundData = soundId;
-        t.soundLabel = pendingSound.label;
-      } catch(e) {
-        showToast('Failed to save sound file');
-      }
+    // Attach pending sound (from form picker — references a library entry already saved)
+    if (pendingSound.type === 'file' && pendingSound.data) {
+      t.soundType = 'file';
+      t.soundData = pendingSound.data;  // Library id, blob already in SoundDB
+      t.soundLabel = pendingSound.label;
     } else if (pendingSound.type === 'youtube' && pendingSound.data) {
       t.soundType = 'youtube';
-      t.soundData = pendingSound.data;
+      t.soundData = pendingSound.data;  // Video ID
       t.soundLabel = pendingSound.label;
     }
 
@@ -1559,7 +1723,11 @@
   function cancelTimerById(id) {
     if (!confirm('Cancel timer?')) return;
     const t = findTimer(id);
-    if (t && t.soundType === 'file' && t.soundData) SoundDB.remove(t.soundData);
+    stopTimerSound(id);
+    // Only delete blob if it's a legacy per-timer entry, NOT a library entry
+    if (t && t.soundType === 'file' && t.soundData && !isLibraryEntry(t.soundData)) {
+      SoundDB.remove(t.soundData);
+    }
     removeTimerById(id);
     saveTimers();
     renderTimers();
@@ -1568,26 +1736,75 @@
 
   function dismissTimer(id) {
     const t = findTimer(id);
-    if (t && t.soundType === 'file' && t.soundData) SoundDB.remove(t.soundData);
+    stopTimerSound(id);
+    // Only delete blob if it's a legacy per-timer entry, NOT a library entry
+    if (t && t.soundType === 'file' && t.soundData && !isLibraryEntry(t.soundData)) {
+      SoundDB.remove(t.soundData);
+    }
     removeTimerById(id);
     saveTimers();
     renderTimers();
     recomputeAlerts();
   }
 
+  // Active sounds keyed by timer id — each entry has a stop() function
+  let activeTimerSounds = new Map();
+  let ytCurrentOwner = null;  // timer id currently playing in the (single) YT player
+
+  function stopTimerSound(id) {
+    const sound = activeTimerSounds.get(id);
+    if (sound) {
+      try { sound.stop(); } catch(e) {}
+      activeTimerSounds.delete(id);
+    }
+  }
+
   async function playTimerSound(t) {
+    // Defensive: stop any prior sound for this timer
+    stopTimerSound(t.id);
+
     if (t.soundType === 'youtube' && t.soundData) {
-      playYouTubeSound(t.soundData);
+      try {
+        await loadYouTubeAPI();
+        await ensureYTPlayer();
+        ytPlayer.loadVideoById(t.soundData);
+        try { ytPlayer.unMute(); } catch(e) {}
+        ytPlayer.playVideo();
+        ytCurrentOwner = t.id;
+        const myId = t.id;
+        activeTimerSounds.set(myId, {
+          type: 'youtube',
+          stop: () => {
+            // Only stop the player if this timer is still the current owner
+            if (ytCurrentOwner === myId && ytPlayer && ytReady) {
+              try { ytPlayer.stopVideo(); } catch(e) {}
+              ytCurrentOwner = null;
+            }
+          }
+        });
+      } catch(e) {}
       return;
     }
+
     if (t.soundType === 'file' && t.soundData) {
       try {
         const record = await SoundDB.get(t.soundData);
         if (record && record.blob) {
           const url = URL.createObjectURL(record.blob);
           const audio = new Audio(url);
+          const myId = t.id;
+          activeTimerSounds.set(myId, {
+            type: 'file',
+            stop: () => {
+              try { audio.pause(); audio.currentTime = 0; } catch(e) {}
+              try { URL.revokeObjectURL(url); } catch(e) {}
+            }
+          });
           audio.play().catch(() => {});
-          audio.addEventListener('ended', () => URL.revokeObjectURL(url));
+          audio.addEventListener('ended', () => {
+            try { URL.revokeObjectURL(url); } catch(e) {}
+            activeTimerSounds.delete(myId);
+          });
           return;
         }
       } catch(e) {}
@@ -1971,28 +2188,113 @@
     };
   });
 
-  // Sound picker bindings
-  $('sound-change-btn').onclick = () => {
-    $('sound-picker').classList.toggle('hidden');
-  };
-  document.querySelectorAll('.sound-opt').forEach(opt => {
-    opt.onclick = () => {
-      const type = opt.dataset.type;
+  // ===== SOUND PICKER (with sound library) =====
+  function renderSoundPicker() {
+    const picker = $('sound-picker');
+    picker.innerHTML = '';
+
+    // Default beep — always first option
+    const defBtn = document.createElement('button');
+    defBtn.className = 'sound-opt';
+    defBtn.innerHTML = ICONS.bell + 'Default beep';
+    defBtn.onclick = () => {
       $('sound-picker').classList.add('hidden');
-      if (type === 'default') {
-        setPendingSound('default', null, '', null);
-      } else if (type === 'file') {
-        $('sound-file-input').click();
-      } else if (type === 'youtube') {
-        const url = prompt('Paste YouTube URL or video ID:');
-        if (!url) return;
-        const id = extractVideoId(url);
-        if (!id) { showToast('Invalid YouTube URL'); return; }
-        setPendingSound('youtube', id, id, null);
-      }
+      setPendingSound('default', null, '');
     };
-  });
-  $('sound-file-input').onchange = (e) => {
+    picker.appendChild(defBtn);
+
+    // Saved sounds section
+    if (soundLibrary.length > 0) {
+      const sec = document.createElement('div');
+      sec.className = 'sound-lib-section';
+      const heading = document.createElement('div');
+      heading.className = 'sound-lib-heading';
+      heading.textContent = 'Saved sounds';
+      sec.appendChild(heading);
+
+      for (const entry of soundLibrary) {
+        const row = document.createElement('div');
+        row.className = 'sound-lib-item';
+        const iconKey = entry.type === 'file' ? 'music' : 'play';
+        row.innerHTML = ICONS[iconKey] + '<span class="sound-lib-label"></span><button class="sound-lib-remove" title="Remove">×</button>';
+        row.querySelector('.sound-lib-label').textContent = entry.label;
+        row.addEventListener('click', (e) => {
+          if (e.target.closest('.sound-lib-remove')) return;
+          $('sound-picker').classList.add('hidden');
+          if (entry.type === 'file') {
+            setPendingSound('file', entry.id, entry.label);
+          } else {
+            setPendingSound('youtube', entry.videoId, entry.label);
+          }
+        });
+        row.querySelector('.sound-lib-remove').onclick = async (e) => {
+          e.stopPropagation();
+          const wasSelected = (entry.type === 'file' && pendingSound.data === entry.id) ||
+                              (entry.type === 'youtube' && pendingSound.data === entry.videoId);
+          await removeFromLibrary(entry.id);
+          if (wasSelected) setPendingSound('default', null, '');
+          renderSoundPicker();
+        };
+        sec.appendChild(row);
+      }
+
+      // Clear all link
+      const clearWrap = document.createElement('div');
+      clearWrap.className = 'sound-lib-clear-wrap';
+      const clearBtn = document.createElement('button');
+      clearBtn.className = 'sound-lib-clear';
+      clearBtn.textContent = 'Clear all';
+      clearBtn.onclick = async () => {
+        if (!confirm('Remove all saved sounds?')) return;
+        await clearSoundLibrary();
+        if (pendingSound.type !== 'default') setPendingSound('default', null, '');
+        renderSoundPicker();
+      };
+      clearWrap.appendChild(clearBtn);
+      sec.appendChild(clearWrap);
+
+      picker.appendChild(sec);
+    }
+
+    // Add new — file
+    const fileBtn = document.createElement('button');
+    fileBtn.className = 'sound-opt';
+    fileBtn.innerHTML = ICONS.music + 'Upload audio file...';
+    fileBtn.onclick = () => {
+      $('sound-picker').classList.add('hidden');
+      $('sound-file-input').click();
+    };
+    picker.appendChild(fileBtn);
+
+    // Add new — YouTube
+    const ytBtn = document.createElement('button');
+    ytBtn.className = 'sound-opt';
+    ytBtn.innerHTML = ICONS.play + 'Add YouTube link...';
+    ytBtn.onclick = async () => {
+      $('sound-picker').classList.add('hidden');
+      const url = prompt('Paste YouTube URL or video ID:');
+      if (!url) return;
+      const id = extractVideoId(url);
+      if (!id) { showToast('Invalid YouTube URL'); return; }
+      showToast('Fetching video info...');
+      const libId = await addYouTubeToLibrary(id);
+      const entry = soundLibrary.find(e => e.id === libId);
+      setPendingSound('youtube', id, entry ? entry.label : id);
+    };
+    picker.appendChild(ytBtn);
+  }
+
+  $('sound-change-btn').onclick = () => {
+    const picker = $('sound-picker');
+    if (picker.classList.contains('hidden')) {
+      renderSoundPicker();
+      picker.classList.remove('hidden');
+    } else {
+      picker.classList.add('hidden');
+    }
+  };
+
+  $('sound-file-input').onchange = async (e) => {
     const file = e.target.files && e.target.files[0];
     if (!file) return;
     if (file.size > 10 * 1024 * 1024) {
@@ -2000,7 +2302,11 @@
       e.target.value = '';
       return;
     }
-    setPendingSound('file', null, file.name, file);
+    // Add to library and select
+    const libId = await addFileToLibrary(file);
+    if (libId) {
+      setPendingSound('file', libId, file.name);
+    }
     e.target.value = '';
   };
 
@@ -2246,6 +2552,8 @@
     if (pulseTitleInterval) { clearInterval(pulseTitleInterval); pulseTitleInterval = null; }
     document.title = ORIGINAL_TITLE;
     stopAlarm();
+    // Defensive: stop any per-timer sounds that survived
+    for (const id of Array.from(activeTimerSounds.keys())) stopTimerSound(id);
   }
 
   // ============================================================
@@ -2428,7 +2736,11 @@
     if (wakeLockSentinel) return;
     try {
       wakeLockSentinel = await navigator.wakeLock.request('screen');
-      wakeLockSentinel.addEventListener('release', () => { wakeLockSentinel = null; });
+      wakeLockSentinel.addEventListener('release', () => {
+        wakeLockSentinel = null;
+        // Update help text live if settings panel is open
+        if ($('settings-panel').classList.contains('visible')) updateWakeLockUI();
+      });
     } catch(e) {}
   }
 
@@ -2446,9 +2758,10 @@
     else await releaseWakeLock();
   }
 
-  document.addEventListener('visibilitychange', () => {
+  document.addEventListener('visibilitychange', async () => {
     if (document.visibilityState === 'visible' && wakeLockEnabled && !wakeLockSentinel) {
-      acquireWakeLock();
+      await acquireWakeLock();
+      if ($('settings-panel').classList.contains('visible')) updateWakeLockUI();
     }
   });
 
@@ -2459,9 +2772,21 @@
       return;
     }
     $('wakelock-toggle').checked = wakeLockEnabled;
+    // Visual feedback for actual lock state
+    const helpEl = $('wakelock-help');
+    if (wakeLockEnabled && wakeLockSentinel) {
+      helpEl.textContent = 'Active — screen will stay awake while this page is visible.';
+    } else if (wakeLockEnabled && !wakeLockSentinel) {
+      helpEl.textContent = 'Pending — will activate when the page is visible.';
+    } else {
+      helpEl.textContent = 'Prevents the screen from dimming or turning off.';
+    }
   }
 
-  $('wakelock-toggle').onchange = (e) => setWakeLock(e.target.checked);
+  $('wakelock-toggle').onchange = async (e) => {
+    await setWakeLock(e.target.checked);
+    updateWakeLockUI();
+  };
 
   function isFullscreen() {
     return !!(document.fullscreenElement || document.webkitFullscreenElement);
@@ -2535,6 +2860,9 @@
 
   // Open SoundDB (async, non-blocking)
   SoundDB.open().catch(() => {});
+
+  // Load sound library (sync, from localStorage)
+  loadSoundLibrary();
 
   // Apply saved theme before any rendering to avoid flash
   applyTheme(currentTheme);
